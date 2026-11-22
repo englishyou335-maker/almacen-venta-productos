@@ -3,11 +3,52 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/functions.php';
 
-/** Lee una variable de entorno como cadena limpia. */
-function cloudinaryValor(string $clave): string
+/** Lee una variable de entorno suelta como cadena limpia. */
+function cloudinaryValorDirecto(string $clave): string
 {
     $valor = getenv($clave);
     return $valor === false ? '' : $valor;
+}
+
+/**
+ * Credenciales de Cloudinary. CLOUDINARY_URL (cloudinary://key:secret@cloud)
+ * tiene prioridad; si no está o está incompleta se usan las tres variables
+ * separadas, para no romper despliegues anteriores.
+ */
+function cloudinaryCredenciales(): array
+{
+    static $cache = null;
+    if ($cache !== null) {
+        return $cache;
+    }
+
+    $url = getenv('CLOUDINARY_URL');
+    if ($url !== false && $url !== '') {
+        $partes = parse_url($url);
+        $cloud = is_array($partes) ? (string) ($partes['host'] ?? '') : '';
+        $key = is_array($partes) ? (string) ($partes['user'] ?? '') : '';
+        $secret = is_array($partes) ? (string) ($partes['pass'] ?? '') : '';
+        if ($cloud !== '' && $key !== '' && $secret !== '') {
+            return $cache = [
+                'CLOUDINARY_CLOUD_NAME' => rawurldecode($cloud),
+                'CLOUDINARY_API_KEY'    => rawurldecode($key),
+                'CLOUDINARY_API_SECRET' => rawurldecode($secret),
+            ];
+        }
+    }
+
+    return $cache = [
+        'CLOUDINARY_CLOUD_NAME' => cloudinaryValorDirecto('CLOUDINARY_CLOUD_NAME'),
+        'CLOUDINARY_API_KEY'    => cloudinaryValorDirecto('CLOUDINARY_API_KEY'),
+        'CLOUDINARY_API_SECRET' => cloudinaryValorDirecto('CLOUDINARY_API_SECRET'),
+    ];
+}
+
+/** Devuelve una credencial de Cloudinary ya resuelta. */
+function cloudinaryValor(string $clave): string
+{
+    $credenciales = cloudinaryCredenciales();
+    return $credenciales[$clave] ?? '';
 }
 
 /** ¿Hay credenciales suficientes para subir imágenes? */

@@ -10,6 +10,7 @@
 # Subidas temporales (las definitivas van a Cloudinary)
 /uploads/*
 !/uploads/.gitkeep
+/fidalga_imagenes/
 
 # Logs, cachés y certificados locales
 *.log

@@ -114,8 +114,10 @@ producto (en edición se muestra de solo lectura).
 3. En el dashboard de Render rellena **una sola variable**:
    `DB_URL=mysql://USUARIO:PASSWORD@HOST:4000/test`
    (usa la cadena que te da TiDB Cloud; el CA del sistema ya está en la imagen).
-4. Cloudinary es opcional. Si no tienes credenciales, no añadas nada: los productos se guardan
-   sin imagen y se muestra un placeholder.
+4. Cloudinary es opcional y usa **una sola variable**:
+   `CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME`.
+   En total, Render necesita solo dos variables manuales: `DB_URL` y `CLOUDINARY_URL`.
+   Si no tienes credenciales, no añadas nada: los productos se guardan sin imagen y se muestra un placeholder.
 5. No hace falta `APP_URL`, `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` ni `DB_PASS` en producción:
    `includes/db.php` obtiene todo de `DB_URL`.
 

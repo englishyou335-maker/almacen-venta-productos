@@ -1,4 +1,4 @@
-# Render Blueprint. El password va en el dashboard (sync: false), nunca en GitHub.
+# Render Blueprint. Los secretos van en el dashboard (sync: false), nunca en GitHub.
 services:
   - type: web
     name: almacen-venta
@@ -6,4 +6,6 @@ services:
     plan: free
     envVars:
       - key: DB_URL
+        sync: false
+      - key: CLOUDINARY_URL
         sync: false
