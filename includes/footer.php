@@ -9,7 +9,10 @@
                     <span class="w-10 h-10 rounded-2xl bg-brand-500/20 text-brand-300 grid place-items-center">
                         <i class="fa-solid fa-basket-shopping"></i>
                     </span>
-                    <span class="font-display font-extrabold text-xl text-white">Mi Almacén</span>
+                    <span class="leading-tight">
+                        <span class="block font-display font-extrabold text-lg text-white">Mi Almacén Laura</span>
+                        <span class="block text-[9px] uppercase tracking-[0.22em] text-brand-300 font-bold">Murillo</span>
+                    </span>
                 </div>
                 <p class="text-sm text-slate-400 mt-4 leading-relaxed">
                     Catálogo de almacén con reserva previa. Arma tu lista, elige la fecha de retiro y pagas en tienda.
@@ -48,7 +51,7 @@
         </div>
 
         <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-            <p>&copy; <?= date('Y') ?> Mi Almacén. Catálogo con reserva previa.</p>
+            <p>&copy; <?= date('Y') ?> Mi Almacén Laura - Murillo. Catálogo con reserva previa.</p>
             <p class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brand-400"></span> Los precios se confirman al retirar.</p>
         </div>
     </div>

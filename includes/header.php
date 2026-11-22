@@ -49,12 +49,15 @@ function navActivo(string $archivo, string $actual): string
     <div class="max-w-7xl mx-auto px-4">
         <div class="h-16 flex items-center justify-between gap-3">
             <a href="/index.php" class="flex items-center gap-3 group shrink-0">
-                <span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white grid place-items-center shadow-soft group-hover:rotate-6 transition-transform">
-                    <i class="fa-solid fa-basket-shopping text-lg"></i>
-                </span>
+                <img src="/assets/img/logo/logo-160.webp"
+                     srcset="/assets/img/logo/logo-160.webp 160w, /assets/img/logo/logo-320.webp 320w, /assets/img/logo/logo-640.webp 640w"
+                     sizes="(min-width: 640px) 48px, 40px"
+                     width="48" height="48"
+                     alt="Mi Almacén Laura - Murillo"
+                     class="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-2xl bg-white ring-1 ring-slate-100 shadow-soft group-hover:rotate-6 transition-transform">
                 <span class="leading-tight">
-                    <span class="block font-display font-extrabold text-lg text-ink-900 tracking-tight">Mi Almacén</span>
-                    <span class="block text-[9px] uppercase tracking-[0.22em] text-brand-600 font-bold">Catálogo y reservas</span>
+                    <span class="block font-display font-extrabold text-lg text-ink-900 tracking-tight">Mi Almacén Laura</span>
+                    <span class="block text-[9px] uppercase tracking-[0.22em] text-brand-600 font-bold">Murillo · Catálogo y reservas</span>
                 </span>
             </a>
 

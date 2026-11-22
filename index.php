@@ -23,8 +23,9 @@ include __DIR__ . '/includes/header.php';
                     Catálogo con reserva previa
                 </span>
                 <h1 class="mt-6 font-display text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-[1.08] tracking-tight">
-                    Todo el almacén,<br>
-                    <span class="text-brand-300">listo para tu retiro.</span>
+                    <span class="block text-white">Mi Almacén</span>
+                    <span class="block font-script text-5xl sm:text-6xl xl:text-7xl font-normal leading-[1.2] bg-gradient-to-r from-brand-200 via-white to-brand-300 bg-clip-text text-transparent">Laura</span>
+                    <span class="block text-brand-300">- Murillo</span>
                 </h1>
                 <p class="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-slate-300">
                     Explora productos, consulta la disponibilidad y arma tu pedido.
