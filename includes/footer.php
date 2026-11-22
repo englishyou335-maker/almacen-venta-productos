@@ -54,6 +54,10 @@
             <p>&copy; <?= date('Y') ?> Mi Almacén Laura - Murillo. Catálogo con reserva previa.</p>
             <p class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brand-400"></span> Los precios se confirman al retirar.</p>
         </div>
+
+        <p class="mt-6 text-center text-xs text-slate-500">
+            Hecho por: Cristian Ronald Mamani Nina y Yoel Cristian Calamani Laura
+        </p>
     </div>
 </footer>
 
