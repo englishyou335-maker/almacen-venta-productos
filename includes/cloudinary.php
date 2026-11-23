@@ -167,10 +167,11 @@ function cloudinarySubir(array $archivo, string $carpeta = 'productos'): array
         return ['ok' => false, 'error' => 'La imagen supera los 5 MB.'];
     }
 
+    // "folder" crea la carpeta real en la Media Library; el public_id final
+    // queda "qr/<hex>" o "productos/<hex>" sin duplicar el prefijo.
     $parametros = [
-        'public_id' => $carpeta . '/' . bin2hex(random_bytes(10)),
-        'timestamp' => time(),
-        'overwrite' => 'true',
+        'public_id' => bin2hex(random_bytes(10)),
+        'folder'    => $carpeta,
     ];
 
     $url = 'https://api.cloudinary.com/v1_1/'
