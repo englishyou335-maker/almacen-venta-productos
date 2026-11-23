@@ -10,10 +10,55 @@ function cloudinaryValorDirecto(string $clave): string
     return $valor === false ? '' : $valor;
 }
 
+/** Interpreta cloudinary://API_KEY:API_SECRET@CLOUD_NAME, incluso con comillas o prefijo. */
+function cloudinaryParsearUrl(string $url): ?array
+{
+    $url = trim(trim($url), "\"'");
+    if (stripos($url, 'CLOUDINARY_URL=') === 0) {
+        $url = substr($url, strlen('CLOUDINARY_URL='));
+    }
+    if ($url === '') {
+        return null;
+    }
+
+    $partes = parse_url($url);
+    $cloud = is_array($partes) ? (string) ($partes['host'] ?? '') : '';
+    $key = is_array($partes) ? (string) ($partes['user'] ?? '') : '';
+    $secret = is_array($partes) ? (string) ($partes['pass'] ?? '') : '';
+
+    if ($cloud === '' || $key === '' || $secret === '') {
+        $sinEsquema = preg_replace('/^[a-z][a-z0-9+.-]*:\/\//i', '', $url) ?? '';
+        $arrobas = strrpos($sinEsquema, '@');
+        if ($arrobas !== false) {
+            $credenciales = substr($sinEsquema, 0, $arrobas);
+            $cloud = explode('/', substr($sinEsquema, $arrobas + 1))[0];
+            $dosPuntos = strpos($credenciales, ':');
+            if ($dosPuntos !== false) {
+                $key = substr($credenciales, 0, $dosPuntos);
+                $secret = substr($credenciales, $dosPuntos + 1);
+            }
+        }
+    }
+
+    $cloud = rawurldecode($cloud);
+    $key = rawurldecode($key);
+    $secret = rawurldecode($secret);
+    if ($cloud === '' || $key === '' || $secret === '') {
+        return null;
+    }
+
+    return [
+        'CLOUDINARY_CLOUD_NAME' => $cloud,
+        'CLOUDINARY_API_KEY'    => $key,
+        'CLOUDINARY_API_SECRET' => $secret,
+    ];
+}
+
 /**
- * Credenciales de Cloudinary. CLOUDINARY_URL (cloudinary://key:secret@cloud)
- * tiene prioridad; si no está o está incompleta se usan las tres variables
- * separadas, para no romper despliegues anteriores.
+ * Prioridad: cadena guardada desde el panel, CLOUDINARY_URL del entorno,
+ * y finalmente las tres variables separadas (despliegues anteriores).
+ * En Render, donde la variable a veces no llega a PHP, la cadena de la BD
+ * permite seguir subiendo imágenes sin tocar el servidor.
  */
 function cloudinaryCredenciales(): array
 {
@@ -22,25 +67,38 @@ function cloudinaryCredenciales(): array
         return $cache;
     }
 
-    $url = getenv('CLOUDINARY_URL');
-    if ($url !== false && $url !== '') {
-        $partes = parse_url($url);
-        $cloud = is_array($partes) ? (string) ($partes['host'] ?? '') : '';
-        $key = is_array($partes) ? (string) ($partes['user'] ?? '') : '';
-        $secret = is_array($partes) ? (string) ($partes['pass'] ?? '') : '';
-        if ($cloud !== '' && $key !== '' && $secret !== '') {
-            return $cache = [
-                'CLOUDINARY_CLOUD_NAME' => rawurldecode($cloud),
-                'CLOUDINARY_API_KEY'    => rawurldecode($key),
-                'CLOUDINARY_API_SECRET' => rawurldecode($secret),
-            ];
+    $guardada = settingObtener('cloudinary_url');
+    if ($guardada !== '') {
+        $desdeBd = cloudinaryParsearUrl($guardada);
+        if ($desdeBd !== null) {
+            $desdeBd['origen'] = 'base-de-datos';
+            return $cache = $desdeBd;
         }
     }
 
-    return $cache = [
+    $desdeEntorno = cloudinaryParsearUrl(cloudinaryValorDirecto('CLOUDINARY_URL'));
+    if ($desdeEntorno !== null) {
+        $desdeEntorno['origen'] = 'variable-de-entorno';
+        return $cache = $desdeEntorno;
+    }
+
+    $separadas = [
         'CLOUDINARY_CLOUD_NAME' => cloudinaryValorDirecto('CLOUDINARY_CLOUD_NAME'),
         'CLOUDINARY_API_KEY'    => cloudinaryValorDirecto('CLOUDINARY_API_KEY'),
         'CLOUDINARY_API_SECRET' => cloudinaryValorDirecto('CLOUDINARY_API_SECRET'),
+        'origen'                => 'variables-separadas',
+    ];
+    if ($separadas['CLOUDINARY_CLOUD_NAME'] !== ''
+        && $separadas['CLOUDINARY_API_KEY'] !== ''
+        && $separadas['CLOUDINARY_API_SECRET'] !== '') {
+        return $cache = $separadas;
+    }
+
+    return $cache = [
+        'CLOUDINARY_CLOUD_NAME' => '',
+        'CLOUDINARY_API_KEY'    => '',
+        'CLOUDINARY_API_SECRET' => '',
+        'origen'                => 'sin-configurar',
     ];
 }
 
@@ -59,16 +117,33 @@ function cloudinaryConfigurado(): bool
         && cloudinaryValor('CLOUDINARY_API_SECRET') !== '';
 }
 
+/** Estado para el panel: nunca devuelve secretos, solo la clave enmascarada. */
+function cloudinaryDiagnostico(): array
+{
+    $credenciales = cloudinaryCredenciales();
+    $key = (string) ($credenciales['CLOUDINARY_API_KEY'] ?? '');
+    $enmascarada = $key !== ''
+        ? substr($key, 0, 4) . '••••' . substr($key, -2)
+        : '—';
+
+    return [
+        'configurado' => cloudinaryConfigurado(),
+        'origen'      => (string) ($credenciales['origen'] ?? 'sin-configurar'),
+        'cloud'       => (string) ($credenciales['CLOUDINARY_CLOUD_NAME'] ?? ''),
+        'api_key'     => $enmascarada,
+    ];
+}
+
 /**
- * Sube una imagen a Cloudinary usando una petición REST firmada.
- * No necesita Composer: la firma es sha1 de los parámetros ordenados + el secreto.
+ * Sube una imagen a Cloudinary con autenticación Basic (la firma SHA1 de esta
+ * cuenta no es aceptada). No necesita Composer, solo cURL.
  * Devuelve ['ok'=>bool, 'url'=>..., 'public_id'=>...] o ['ok'=>false,'error'=>...].
  */
 function cloudinarySubir(array $archivo, string $carpeta = 'productos'): array
 {
     $carpeta = preg_replace('/[^a-zA-Z0-9_-]/', '', $carpeta) ?: 'productos';
     if (!cloudinaryConfigurado()) {
-        return ['ok' => false, 'error' => 'Cloudinary no está configurado. La imagen se omitió.'];
+        return ['ok' => false, 'error' => 'Cloudinary no está configurado en este servidor. Revisa el estado en /admin/qr-pago.php.'];
     }
     if (!isset($archivo['tmp_name'], $archivo['error']) || $archivo['error'] !== UPLOAD_ERR_OK) {
         return ['ok' => false, 'error' => 'No se recibió ninguna imagen válida.'];
@@ -97,14 +172,6 @@ function cloudinarySubir(array $archivo, string $carpeta = 'productos'): array
         'timestamp' => time(),
         'overwrite' => 'true',
     ];
-    ksort($parametros);
-    $cadena = '';
-    foreach ($parametros as $clave => $valor) {
-        $cadena .= $clave . '=' . $valor . '&';
-    }
-    $cadena .= cloudinaryValor('CLOUDINARY_API_SECRET');
-    $parametros['api_key'] = cloudinaryValor('CLOUDINARY_API_KEY');
-    $parametros['signature'] = sha1($cadena);
 
     $url = 'https://api.cloudinary.com/v1_1/'
         . rawurlencode(cloudinaryValor('CLOUDINARY_CLOUD_NAME')) . '/image/upload';
@@ -117,6 +184,8 @@ function cloudinarySubir(array $archivo, string $carpeta = 'productos'): array
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT        => 30,
         CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
+        CURLOPT_USERPWD        => cloudinaryValor('CLOUDINARY_API_KEY') . ':' . cloudinaryValor('CLOUDINARY_API_SECRET'),
     ]);
     $respuesta = curl_exec($ch);
     $error = curl_error($ch);
@@ -143,14 +212,6 @@ function cloudinaryEliminar(string $publicId): bool
         return false;
     }
     $parametros = ['public_id' => $publicId, 'timestamp' => time()];
-    ksort($parametros);
-    $cadena = '';
-    foreach ($parametros as $clave => $valor) {
-        $cadena .= $clave . '=' . $valor . '&';
-    }
-    $cadena .= cloudinaryValor('CLOUDINARY_API_SECRET');
-    $parametros['api_key'] = cloudinaryValor('CLOUDINARY_API_KEY');
-    $parametros['signature'] = sha1($cadena);
 
     $url = 'https://api.cloudinary.com/v1_1/'
         . rawurlencode(cloudinaryValor('CLOUDINARY_CLOUD_NAME')) . '/image/destroy';
@@ -160,6 +221,9 @@ function cloudinaryEliminar(string $publicId): bool
         CURLOPT_POSTFIELDS     => $parametros,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT        => 30,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
+        CURLOPT_USERPWD        => cloudinaryValor('CLOUDINARY_API_KEY') . ':' . cloudinaryValor('CLOUDINARY_API_SECRET'),
     ]);
     $respuesta = curl_exec($ch);
     curl_close($ch);

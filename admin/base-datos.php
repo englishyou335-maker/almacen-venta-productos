@@ -114,7 +114,11 @@ require_once __DIR__ . '/../includes/admin-header.php';
                         <?php foreach ($filas as $fila): ?>
                             <tr class="border-t border-slate-100 hover:bg-cream">
                                 <?php foreach ($columnas as $columna): ?>
-                                    <?php if (strtolower($columna) === 'password'): ?>
+                                    <?php
+                                    $ocultar = strtolower($columna) === 'password'
+                                        || (strtolower($columna) === 'valor' && ($fila['setting_key'] ?? '') === 'cloudinary_url');
+                                    ?>
+                                    <?php if ($ocultar): ?>
                                         <td class="px-4 py-2 text-ink-400">***</td>
                                     <?php elseif ($fila[$columna] === null): ?>
                                         <td class="px-4 py-2 text-ink-400">NULL</td>
