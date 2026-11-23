@@ -137,3 +137,47 @@ function etiquetaDisponibilidad($stock): string
 {
     return (int) $stock > 0 ? 'Consultar disponibilidad' : 'Agotado temporalmente';
 }
+
+/** Lee un valor global. Si la tabla aún no existe, devuelve el valor por defecto. */
+function settingObtener(string $clave, string $porDefecto = ''): string
+{
+    try {
+        $stmt = db()->prepare('SELECT valor FROM settings WHERE setting_key = :clave LIMIT 1');
+        $stmt->execute([':clave' => $clave]);
+        $valor = $stmt->fetchColumn();
+        return $valor === false || $valor === null ? $porDefecto : (string) $valor;
+    } catch (Throwable $e) {
+        return $porDefecto;
+    }
+}
+
+/** Inserta o actualiza un valor global (marcadores distintos para PDO nativo). */
+function settingGuardar(string $clave, string $valor): void
+{
+    $stmt = db()->prepare(
+        'INSERT INTO settings (setting_key, valor) VALUES (:clave, :valor)
+         ON DUPLICATE KEY UPDATE valor = :valor_nuevo'
+    );
+    $stmt->execute([':clave' => $clave, ':valor' => $valor, ':valor_nuevo' => $valor]);
+}
+
+function settingEliminar(string $clave): void
+{
+    $stmt = db()->prepare('DELETE FROM settings WHERE setting_key = :clave');
+    $stmt->execute([':clave' => $clave]);
+}
+
+/** Configuración actual del QR de pago subido desde el panel. */
+function qrPago(): array
+{
+    return [
+        'url'       => settingObtener('qr_pago_url'),
+        'public_id' => settingObtener('qr_pago_public_id'),
+    ];
+}
+
+/** URL de Cloudinary que fuerza la descarga con nombre de archivo. */
+function urlDescargaCloudinary(string $url): string
+{
+    return str_replace('/image/upload/', '/image/upload/fl_attachment/qr-pago/', $url);
+}

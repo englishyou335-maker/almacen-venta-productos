@@ -46,6 +46,14 @@ CREATE TABLE IF NOT EXISTS product_images (
     REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Configuración global (clave/valor). La imagen del QR de pago se guarda aquí
+-- como qr_pago_url / qr_pago_public_id para poder reemplazarla desde el panel.
+CREATE TABLE IF NOT EXISTS settings (
+  setting_key VARCHAR(64) NOT NULL PRIMARY KEY,
+  valor TEXT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS reservations (
   id INT AUTO_INCREMENT PRIMARY KEY,
   customer_name VARCHAR(255) NOT NULL,

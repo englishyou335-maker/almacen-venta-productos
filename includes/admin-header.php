@@ -13,6 +13,7 @@ $enlaces = [
     ['productos.php', 'Productos', 'fa-box', 'productos'],
     ['categorias.php', 'Categorías', 'fa-layer-group', 'categorias'],
     ['reservas.php', 'Reservas', 'fa-clipboard-list', 'reservas'],
+    ['qr-pago.php', 'QR de pago', 'fa-qrcode', 'qr-pago'],
 ];
 
 /** Clase del enlace activo del sidebar. */

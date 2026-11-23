@@ -64,8 +64,9 @@ function cloudinaryConfigurado(): bool
  * No necesita Composer: la firma es sha1 de los parámetros ordenados + el secreto.
  * Devuelve ['ok'=>bool, 'url'=>..., 'public_id'=>...] o ['ok'=>false,'error'=>...].
  */
-function cloudinarySubir(array $archivo): array
+function cloudinarySubir(array $archivo, string $carpeta = 'productos'): array
 {
+    $carpeta = preg_replace('/[^a-zA-Z0-9_-]/', '', $carpeta) ?: 'productos';
     if (!cloudinaryConfigurado()) {
         return ['ok' => false, 'error' => 'Cloudinary no está configurado. La imagen se omitió.'];
     }
@@ -92,7 +93,7 @@ function cloudinarySubir(array $archivo): array
     }
 
     $parametros = [
-        'public_id' => 'productos/' . bin2hex(random_bytes(10)),
+        'public_id' => $carpeta . '/' . bin2hex(random_bytes(10)),
         'timestamp' => time(),
         'overwrite' => 'true',
     ];

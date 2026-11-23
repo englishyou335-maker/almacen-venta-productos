@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/../includes/functions.php';
 $pageTitle = 'Mi carrito';
-$extraScripts = ['/carrito/reserva.js'];
+$extraScripts = ['/carrito/reserva.js', '/carrito/qr-pago.js'];
+$qrPago = qrPago();
 include __DIR__ . '/../includes/header.php';
 ?>
 <div class="max-w-7xl mx-auto px-4 py-10 md:py-14">
@@ -61,6 +63,41 @@ include __DIR__ . '/../includes/header.php';
             </p>
         </aside>
     </div>
+
+    <?php if ($qrPago['url'] !== ''): ?>
+        <section id="pago-qr" class="mt-6 max-w-4xl rounded-3xl border border-brand-100 bg-white p-5 shadow-soft sm:p-8" data-aos="fade-up">
+            <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+                <div class="shrink-0 rounded-3xl bg-cream p-3 ring-1 ring-slate-100">
+                    <img id="qr-pago-imagen" src="<?= e($qrPago['url']) ?>"
+                         data-url="<?= e($qrPago['url']) ?>"
+                         alt="Código QR para pago rápido"
+                         class="mx-auto h-44 w-44 object-contain sm:h-52 sm:w-52">
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Pago rápido con QR</p>
+                    <h2 class="mt-2 font-display text-xl font-bold text-ink-900 sm:text-2xl">Escanea y paga con QR al retirar tu reserva</h2>
+                    <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                        Descarga la imagen o compártela con quien vaya a retirar el pedido.
+                    </p>
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <a href="<?= e(urlDescargaCloudinary($qrPago['url'])) ?>" download="qr-pago"
+                           target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-3 font-bold text-white transition hover:bg-brand-700">
+                            <i class="fa-solid fa-download"></i> Descargar QR
+                        </a>
+                        <button id="btn-compartir-qr" type="button"
+                                class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-5 py-3 font-bold text-ink-700 transition hover:border-brand-300 hover:text-brand-700 disabled:opacity-50">
+                            <i class="fa-solid fa-share-nodes"></i> Compartir QR
+                        </button>
+                    </div>
+                    <p class="mt-4 text-[11px] leading-relaxed text-ink-500">
+                        <i class="fa-solid fa-circle-info mr-1 text-brand-500"></i>
+                        No se realiza ningún pago online: el QR es solo una forma rápida de pagar al retirar.
+                    </p>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
 
     <!-- Formulario de reserva -->
     <form id="form-reserva"
