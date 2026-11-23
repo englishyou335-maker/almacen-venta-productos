@@ -55,7 +55,7 @@ function cloudinaryParsearUrl(string $url): ?array
 }
 
 /**
- * Prioridad: cadena guardada desde el panel, CLOUDINARY_URL del entorno,
+ * Prioridad: cadena guardada en la base de datos, CLOUDINARY_URL del entorno,
  * y finalmente las tres variables separadas (despliegues anteriores).
  * En Render, donde la variable a veces no llega a PHP, la cadena de la BD
  * permite seguir subiendo imágenes sin tocar el servidor.

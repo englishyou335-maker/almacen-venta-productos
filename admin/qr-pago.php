@@ -15,22 +15,7 @@ if (metodo() === 'POST') {
     $accion = (string) ($_POST['accion'] ?? '');
     $qrActual = qrPago();
 
-    if ($accion === 'guardar_cloudinary') {
-        $cadena = trim((string) ($_POST['cloudinary_url'] ?? ''));
-        if (cloudinaryParsearUrl($cadena) === null) {
-            flashSet('La cadena no es válida. Usa cloudinary://API_KEY:API_SECRET@CLOUD_NAME.', 'error');
-        } else {
-            try {
-                settingGuardar('cloudinary_url', $cadena);
-                flashSet('Conexión Cloudinary guardada. Ya puedes subir el QR.');
-            } catch (Throwable $e) {
-                flashSet('No se pudo guardar la conexión. ¿Se ejecutó database/migrate-qr-pago.sql?', 'error');
-            }
-        }
-    } elseif ($accion === 'quitar_cloudinary') {
-        settingEliminar('cloudinary_url');
-        flashSet('Se quitó la conexión guardada. Se usará la variable del servidor.');
-    } elseif ($accion === 'eliminar') {
+    if ($accion === 'eliminar') {
         settingEliminar('qr_pago_url');
         settingEliminar('qr_pago_public_id');
         if ($qrActual['public_id'] !== '') {
@@ -63,9 +48,8 @@ if (metodo() === 'POST') {
 
 $qr = qrPago();
 $diagnostico = cloudinaryDiagnostico();
-$credencialGuardada = settingObtener('cloudinary_url') !== '';
 $origenes = [
-    'base-de-datos'       => 'Base de datos (panel)',
+    'base-de-datos'       => 'Base de datos',
     'variable-de-entorno' => 'Variable del servidor',
     'variables-separadas' => 'Variables separadas',
     'sin-configurar'      => 'Sin configurar',
@@ -87,7 +71,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
                 <p class="mt-1 text-sm text-ink-500">
                     <?= $diagnostico['configurado']
                         ? 'Credenciales listas para subir imágenes.'
-                        : 'Faltan credenciales: pega abajo la cadena de conexión.' ?>
+                        : 'Faltan credenciales en la base de datos o en el servidor.' ?>
                 </p>
             </div>
         </div>
@@ -112,33 +96,10 @@ require_once __DIR__ . '/../includes/admin-header.php';
         </div>
     </dl>
 
-    <form method="post" action="/admin/qr-pago.php" class="mt-6 space-y-3">
-        <?= csrfField() ?>
-        <input type="hidden" name="accion" value="guardar_cloudinary">
-        <label class="block">
-            <span class="text-sm font-semibold text-ink-800">Cadena de conexión Cloudinary</span>
-            <input name="cloudinary_url" type="password" autocomplete="off"
-                   placeholder="cloudinary://API_KEY:API_SECRET@CLOUD_NAME"
-                   class="mt-2 w-full rounded-xl border border-slate-200 bg-cream px-4 py-3 text-sm outline-none transition focus:border-brand-400 focus:bg-white focus:ring-4 focus:ring-brand-100">
-            <span class="mt-2 block text-xs text-ink-500">
-                Se guarda en la base de datos y se usa si el servidor no expone la variable de entorno. No se muestra completa.
-            </span>
-        </label>
-        <button type="submit"
-                class="inline-flex items-center gap-2 rounded-xl bg-ink-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700">
-            <i class="fa-solid fa-floppy-disk"></i> Guardar conexión
-        </button>
-    </form>
-
-    <?php if ($credencialGuardada): ?>
-        <form method="post" action="/admin/qr-pago.php" class="mt-3">
-            <?= csrfField() ?>
-            <input type="hidden" name="accion" value="quitar_cloudinary">
-            <button type="submit" class="text-xs font-bold text-red-600 hover:underline">
-                <i class="fa-solid fa-trash mr-1"></i> Quitar conexión guardada
-            </button>
-        </form>
-    <?php endif; ?>
+    <p class="mt-5 text-xs text-ink-500">
+        <i class="fa-solid fa-lock mr-1 text-brand-500"></i>
+        La cadena de conexión se administra en la base de datos; aquí solo se muestra su estado.
+    </p>
 </section>
 
 <div class="grid gap-6 lg:grid-cols-2">
