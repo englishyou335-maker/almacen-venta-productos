@@ -197,18 +197,59 @@ include __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<!-- Cierre -->
-<section class="max-w-7xl mx-auto px-4 pb-6">
-    <div class="relative overflow-hidden rounded-4xl bg-gradient-to-r from-brand-700 via-brand-600 to-brand-800 px-6 py-10 sm:px-12 sm:py-12 text-white" data-aos="fade-up">
-        <div class="absolute -right-10 -top-16 w-64 h-64 rounded-full border-[36px] border-white/5"></div>
-        <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+<!-- Ubicación -->
+<section id="ubicacion" class="max-w-7xl mx-auto px-4 py-10 md:py-14 scroll-mt-24">
+    <div class="text-center max-w-2xl mx-auto" data-aos="fade-up">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Encuéntranos</p>
+        <h2 class="mt-2 font-display text-3xl md:text-4xl font-extrabold tracking-tight text-ink-900">Nuestra ubicación</h2>
+        <p class="mt-3 text-ink-500">Retira tu reserva en tienda, en la zona de Murillo (El Alto – La Paz).</p>
+    </div>
+
+    <div class="mt-9 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div class="flex flex-col justify-between rounded-4xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8" data-aos="fade-up">
             <div>
-                <h2 class="font-display text-2xl sm:text-3xl font-extrabold">¿Ya sabes qué necesitas?</h2>
-                <p class="mt-2 text-brand-100 text-sm sm:text-base">Arma tu carrito y elige el día que prefieras retirar.</p>
+                <span class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-700 grid place-items-center text-xl">
+                    <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <h3 class="mt-5 font-display text-xl font-bold text-ink-900">Mi Almacén Laura - Murillo</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                    Estamos en la zona de Murillo, El Alto – La Paz, Bolivia. Pásanos a retirar tu pedido en el horario de atención.
+                </p>
             </div>
-            <a href="/productos.php" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-brand-800 hover:bg-brand-50 transition">
-                <i class="fa-solid fa-basket-shopping"></i> Explorar productos
-            </a>
+
+            <ul class="mt-7 space-y-3 text-sm text-ink-600">
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-map-pin mt-0.5 w-5 text-brand-600"></i>
+                    <span>Murillo, El Alto – La Paz, Bolivia</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fa-solid fa-clock mt-0.5 w-5 text-brand-600"></i>
+                    <span>Lun a Vie · 9:00 – 18:00</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i class="fa-brands fa-whatsapp mt-0.5 w-5 text-brand-600"></i>
+                    <span><?= e(WHATSAPP_ADMIN_NUMERO) ?></span>
+                </li>
+            </ul>
+
+            <div class="mt-7 flex flex-wrap gap-3">
+                <a href="https://www.google.com/maps/search/?api=1&query=-16.503212276280355%2C-68.20760578229628"
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-3 font-bold text-white transition hover:bg-brand-700">
+                    <i class="fa-solid fa-diamond-turn-right"></i> Cómo llegar
+                </a>
+                <a href="<?= e(WHATSAPP_ADMIN_URL) ?>" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-5 py-3 font-bold text-ink-700 transition hover:bg-slate-50">
+                    <i class="fa-brands fa-whatsapp text-brand-600"></i> Escribir por WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <div class="relative h-72 overflow-hidden rounded-4xl border border-slate-100 bg-white shadow-soft sm:h-96 lg:h-[430px]" data-aos="fade-up" data-aos-delay="100">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d956.3632517864338!2d-68.20760578229628!3d-16.503212276280355!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTfCsDMwJzExLjEiUyA2OMKwMTInMjUuNyJX!5e0!3m2!1ses!2sbo!4v1795448016798!5m2!1ses!2sbo"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+                    title="Ubicación de Mi Almacén Laura - Murillo en Google Maps"
+                    class="absolute inset-0 h-full w-full"></iframe>
         </div>
     </div>
 </section>
