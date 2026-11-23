@@ -246,7 +246,7 @@ include __DIR__ . '/includes/header.php';
         </div>
 
         <div class="relative h-72 overflow-hidden rounded-4xl border border-slate-100 bg-white shadow-soft sm:h-96 lg:h-[430px]" data-aos="fade-up" data-aos-delay="100">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d956.3632517864338!2d-68.20760578229628!3d-16.503212276280355!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTfCsDMwJzExLjEiUyA2OMKwMTInMjUuNyJX!5e0!3m2!1ses!2sbo!4v1795448016798!5m2!1ses!2sbo"
+            <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d239.09091917697464!2d-68.20720881154716!3d-16.503126352123992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zLTE2LjUwMzEyNjM1MjEyMzk5MiwtNjguMjA3MjA4ODExNTQ3MTY!5e0!3m2!1ses!2sbo!4v1795450346552!5m2!1ses!2sbo"
                     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
                     title="Ubicación de Mi Almacén Laura - Murillo en Google Maps"
                     class="absolute inset-0 h-full w-full"></iframe>
