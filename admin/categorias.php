@@ -66,7 +66,11 @@ foreach ($categorias as $c) {
 
 $pageTitle = 'Categorías';
 $seccion = 'categorias';
-$extraScripts = ['https://cdn.datatables.net/3.0.0/js/dataTables.min.js', '/admin/categorias.js'];
+$extraScripts = [
+    'https://cdn.datatables.net/3.0.0/js/dataTables.min.js',
+    'https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js',
+    '/admin/categorias.js',
+];
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
@@ -129,16 +133,18 @@ require_once __DIR__ . '/../includes/admin-header.php';
                         </td>
                         <td class="p-3">
                             <div class="flex gap-3 items-center">
-                                <a href="/admin/categorias.php?editar=<?= (int) $c['id'] ?>" class="text-brand-700 hover:underline" title="Editar">
+                                <a href="/admin/categorias.php?editar=<?= (int) $c['id'] ?>"
+                                   class="inline-flex min-w-[44px] min-h-[44px] items-center justify-center rounded-lg text-brand-700 hover:bg-brand-50"
+                                   title="Editar" aria-label="Editar categoría">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
                                 <form method="post" action="/admin/categorias.php">
                                     <?= csrfField() ?>
                                     <input type="hidden" name="accion" value="eliminar">
                                     <input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
-                                    <button type="submit" class="text-red-500 hover:text-red-700"
+                                    <button type="submit" class="inline-flex min-w-[44px] min-h-[44px] items-center justify-center rounded-lg text-red-500 hover:bg-red-50 hover:text-red-700"
                                             data-confirmar="¿Eliminar la categoría &quot;<?= e($c['name']) ?>&quot;? Los productos quedarán sin categoría."
-                                            title="Eliminar">
+                                            title="Eliminar" aria-label="Eliminar categoría">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>

@@ -271,7 +271,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
         </label>
     </div>
 
-    <div class="mt-8 flex gap-3">
+    <div class="mt-8 flex flex-wrap gap-3">
         <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-700">
             <i class="fa-solid fa-floppy-disk"></i> Guardar
         </button>

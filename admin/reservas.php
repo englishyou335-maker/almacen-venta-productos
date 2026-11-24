@@ -38,7 +38,11 @@ $etiquetasEstado = [
 
 $pageTitle = 'Reservas';
 $seccion = 'reservas';
-$extraScripts = ['https://cdn.datatables.net/3.0.0/js/dataTables.min.js', '/admin/reservas.js'];
+$extraScripts = [
+    'https://cdn.datatables.net/3.0.0/js/dataTables.min.js',
+    'https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js',
+    '/admin/reservas.js',
+];
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
@@ -88,7 +92,8 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     <td class="p-3 text-slate-400 text-xs"><?= e($r['created_at']) ?></td>
                     <td class="p-3">
                         <a href="/admin/reserva-detalle.php?id=<?= (int) $r['id'] ?>"
-                           class="text-brand-700 hover:underline"><i class="fa-solid fa-eye"></i></a>
+                           class="inline-flex min-w-[44px] min-h-[44px] items-center justify-center rounded-lg text-brand-700 hover:bg-brand-50"
+                           title="Ver reserva" aria-label="Ver reserva"><i class="fa-solid fa-eye"></i></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

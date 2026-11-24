@@ -130,7 +130,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
     </section>
 
     <section class="rounded-3xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
             <h2 class="font-display text-xl font-bold text-ink-900">QR actual</h2>
             <?php if ($qr['url'] !== ''): ?>
                 <span class="rounded-full bg-brand-50 px-3 py-1 text-[11px] font-bold text-brand-700">

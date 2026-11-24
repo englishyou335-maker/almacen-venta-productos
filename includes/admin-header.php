@@ -38,9 +38,10 @@ function adminNavActivo(string $clave, string $seccion): string
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/3.0.0/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="/assets/css/custom.css">
 </head>
-<body class="bg-cream text-ink-800 font-sans antialiased min-h-screen flex">
+<body class="bg-cream text-ink-800 font-sans antialiased min-h-screen flex flex-col">
 
 <!-- Sidebar -->
 <aside id="sidebar" class="w-64 min-h-screen flex-shrink-0 bg-ink-950 text-slate-300 hidden md:flex flex-col fixed inset-y-0 left-0 z-30">
@@ -87,16 +88,17 @@ function adminNavActivo(string $clave, string $seccion): string
 </aside>
 
 <!-- Barra superior móvil -->
-<div class="md:hidden bg-ink-950 text-white px-4 py-3 flex items-center justify-between">
+<div class="sticky top-0 z-40 md:hidden bg-ink-950 text-white px-4 py-3 flex items-center justify-between">
     <a href="/admin/dashboard.php" class="flex items-center gap-2 font-display font-bold">
         <span class="w-8 h-8 rounded-xl bg-brand-500 text-ink-950 grid place-items-center"><i class="fa-solid fa-basket-shopping"></i></span>
         Mi Almacén
     </a>
-    <button id="btn-menu" class="text-xl w-9 h-9 rounded-xl bg-white/10 grid place-items-center" aria-label="Abrir menú" aria-expanded="false">
+    <button id="btn-menu" class="text-xl w-9 h-9 rounded-xl bg-white/10 grid place-items-center" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil">
         <i class="fa-solid fa-bars"></i>
     </button>
 </div>
-<div id="menu-movil" class="hidden md:hidden bg-ink-950 text-slate-300 px-4 pb-4 space-y-1 text-sm border-t border-white/10">
+<div id="menu-backdrop" class="hidden fixed inset-0 z-30 bg-black/50 md:hidden"></div>
+<div id="menu-movil" class="hidden fixed inset-x-0 top-14 z-40 max-h-[calc(100vh-3.5rem)] overflow-y-auto bg-ink-950 text-slate-300 px-4 pb-4 pt-2 space-y-1 text-sm border-t border-white/10 shadow-lift md:hidden">
     <?php foreach ($enlaces as [$archivo, $etiqueta, $icono, $clave]): ?>
         <a href="/admin/<?= $archivo ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl <?= adminNavActivo($clave, $seccion) ?>">
             <i class="fa-solid <?= e($icono) ?> w-5"></i><?= e($etiqueta) ?>
@@ -105,6 +107,9 @@ function adminNavActivo(string $clave, string $seccion): string
     <button id="btn-logout-movil" class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 hover:text-white">
         <i class="fa-solid fa-right-from-bracket w-5"></i>Cerrar sesión
     </button>
+    <a href="/index.php" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 hover:text-white">
+        <i class="fa-solid fa-arrow-left w-5"></i>Ver catálogo
+    </a>
 </div>
 
 <div class="flex-1 md:ml-64 min-w-0">

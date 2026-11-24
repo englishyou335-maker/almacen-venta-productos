@@ -133,7 +133,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
             </table>
         </div>
 
-        <div class="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-3 text-xs">
+        <div class="flex flex-wrap items-center justify-center gap-2 border-t border-slate-100 px-5 py-3 text-xs sm:justify-between">
             <?php if ($pagina > 1): ?>
                 <a href="<?= e(bdvUrl($pagina - 1, $parametro, $_GET)) ?>"
                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-bold text-ink-600 hover:bg-slate-100 transition">

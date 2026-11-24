@@ -16,13 +16,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-logout')?.addEventListener('click', logout);
     document.getElementById('btn-logout-movil')?.addEventListener('click', logout);
 
-    // Menú móvil.
+    // Menú móvil: drawer con backdrop, cierre por Escape/fuera y reset en escritorio.
     const botonMenu = document.getElementById('btn-menu');
     const menuMovil = document.getElementById('menu-movil');
+    const backdrop = document.getElementById('menu-backdrop');
+
+    const cerrarMenu = () => {
+        menuMovil?.classList.add('hidden');
+        backdrop?.classList.add('hidden');
+        botonMenu?.setAttribute('aria-expanded', 'false');
+        if (botonMenu) botonMenu.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    };
+    const abrirMenu = () => {
+        menuMovil?.classList.remove('hidden');
+        backdrop?.classList.remove('hidden');
+        botonMenu?.setAttribute('aria-expanded', 'true');
+        if (botonMenu) botonMenu.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    };
+
     botonMenu?.addEventListener('click', () => {
-        const abierto = menuMovil?.classList.toggle('hidden') === false;
-        botonMenu.setAttribute('aria-expanded', String(abierto));
-        botonMenu.innerHTML = `<i class="fa-solid fa-${abierto ? 'xmark' : 'bars'}"></i>`;
+        if (menuMovil?.classList.contains('hidden')) abrirMenu();
+        else cerrarMenu();
+    });
+    backdrop?.addEventListener('click', cerrarMenu);
+    menuMovil?.querySelectorAll('a').forEach((enlace) => enlace.addEventListener('click', cerrarMenu));
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') cerrarMenu();
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) cerrarMenu();
     });
 
     // Confirmación para acciones destructivas en formularios clásicos.

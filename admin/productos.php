@@ -35,7 +35,11 @@ $productos = $pdo->query(
 
 $pageTitle = 'Productos';
 $seccion = 'productos';
-$extraScripts = ['https://cdn.datatables.net/3.0.0/js/dataTables.min.js', '/admin/productos.js'];
+$extraScripts = [
+    'https://cdn.datatables.net/3.0.0/js/dataTables.min.js',
+    'https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js',
+    '/admin/productos.js',
+];
 require_once __DIR__ . '/../includes/admin-header.php';
 ?>
 
@@ -86,20 +90,22 @@ require_once __DIR__ . '/../includes/admin-header.php';
                     <td class="p-3">
                         <div class="flex flex-wrap gap-2 items-center">
                             <a href="/admin/producto-form.php?id=<?= (int) $p['id'] ?>"
-                               class="text-brand-700 hover:underline" title="Editar">
+                               class="inline-flex min-w-[44px] min-h-[44px] items-center justify-center rounded-lg text-brand-700 hover:bg-brand-50"
+                               title="Editar" aria-label="Editar producto">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-                            <button type="button" class="text-amber-600 hover:text-amber-800 btn-stock"
+                            <button type="button" class="inline-flex min-w-[44px] min-h-[44px] items-center justify-center rounded-lg text-amber-600 hover:bg-amber-50 btn-stock"
                                     data-id="<?= (int) $p['id'] ?>" data-nombre="<?= e($p['name']) ?>"
-                                    data-stock="<?= (int) $p['stock'] ?>" title="Ajustar stock">
+                                    data-stock="<?= (int) $p['stock'] ?>" title="Ajustar stock" aria-label="Ajustar stock">
                                 <i class="fa-solid fa-sliders"></i>
                             </button>
                             <form method="post" action="/admin/productos.php" class="inline">
                                 <?= csrfField() ?>
                                 <input type="hidden" name="id" value="<?= (int) $p['id'] ?>">
                                 <input type="hidden" name="accion" value="toggle">
-                                <button type="submit" class="text-slate-500 hover:text-slate-800"
-                                        title="<?= (bool) $p['is_active'] ? 'Desactivar' : 'Activar' ?>">
+                                <button type="submit" class="inline-flex min-w-[44px] min-h-[44px] items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                                        title="<?= (bool) $p['is_active'] ? 'Desactivar' : 'Activar' ?>"
+                                        aria-label="<?= (bool) $p['is_active'] ? 'Desactivar producto' : 'Activar producto' ?>">
                                     <i class="fa-solid <?= (bool) $p['is_active'] ? 'fa-eye-slash' : 'fa-eye' ?>"></i>
                                 </button>
                             </form>
@@ -113,7 +119,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 <!-- Modal de ajuste manual de stock (usa la API existente) -->
 <div id="modal-stock" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
-    <form id="form-stock" class="w-full max-w-md rounded-3xl bg-white p-6 shadow-lift">
+    <form id="form-stock" class="w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto rounded-3xl bg-white p-6 shadow-lift">
         <h2 class="text-xl font-bold mb-1">Ajustar stock</h2>
         <p id="stock-producto" class="text-sm text-slate-500 mb-5"></p>
         <input type="hidden" id="stock-id">

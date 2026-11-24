@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof DataTable !== 'undefined') {
         new DataTable('#tabla-productos', {
+            responsive: true,
             language: {
                 search: 'Buscar:',
                 lengthMenu: 'Mostrar _MENU_ por página',
@@ -23,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('stock-motivo').value = '';
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        document.getElementById('stock-cantidad').focus();
     };
     const cerrar = () => {
         modal.classList.add('hidden');
@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('stock-cancelar')?.addEventListener('click', cerrar);
     modal?.addEventListener('click', (e) => { if (e.target === modal) cerrar(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) cerrar();
+    });
 
     document.getElementById('form-stock')?.addEventListener('submit', async (event) => {
         event.preventDefault();

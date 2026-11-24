@@ -134,7 +134,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
     </div>
 
     <!-- Cambio de estado -->
-    <aside class="rounded-3xl border border-slate-100 bg-white p-6 shadow-soft h-fit">
+    <aside class="order-first rounded-3xl border border-slate-100 bg-white p-6 shadow-soft h-fit lg:order-none">
         <h2 class="font-bold text-lg mb-2">Cambiar estado</h2>
         <p class="text-xs text-slate-500 mb-5">
             El stock se apartó al crear la reserva. Solo cancelar lo devuelve.
