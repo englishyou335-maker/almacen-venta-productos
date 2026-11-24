@@ -25,6 +25,9 @@ function navActivo(string $archivo, string $actual): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#111d24">
     <meta name="csrf-token" content="<?= e(csrfToken()) ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/logo/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/img/logo/favicon-512.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/assets/img/logo/favicon-192.png">
     <meta name="description" content="Catálogo de productos con reserva previa y retiro en tienda. Sin pagos online.">
     <title><?= e($pageTitle) ?> — Mi Almacén</title>
     <script src="https://cdn.tailwindcss.com"></script>

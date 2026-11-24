@@ -31,6 +31,8 @@ function adminNavActivo(string $clave, string $seccion): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#111d24">
     <meta name="csrf-token" content="<?= e(csrfToken()) ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/logo/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/assets/img/logo/favicon-192.png">
     <title><?= e($pageTitle) ?> — Panel | Mi Almacén</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <?php require_once __DIR__ . '/tailwind-config.php'; ?>

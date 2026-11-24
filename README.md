@@ -29,7 +29,7 @@ docker compose up -d --build
 | `/productos.php` | Galería con filtro por categoría y búsqueda (`?categoria=`, `?q=`) |
 | `/producto-detalle.php?id=X` | Ficha del producto |
 | `/contacto.php` | Redirige al WhatsApp del administrador (`+591 62585878`) |
-| `/carrito/carrito.php` | Carrito (`localStorage`) + formulario de reserva |
+| `/carrito/carrito.php` | Carrito (`localStorage`) + formulario de reserva; muestra el QR de pago si está configurado |
 
 ### Admin (requiere sesión)
 
@@ -42,6 +42,8 @@ docker compose up -d --build
 | `/admin/categorias.php` | CRUD de categorías (formulario PHP clásico) |
 | `/admin/reservas.php` | Listado filtrable por estado |
 | `/admin/reserva-detalle.php?id=X` | Detalle y cambio de estado |
+| `/admin/qr-pago.php` | Subir/reemplazar el QR de pago (Cloudinary, carpeta `qr/`) |
+| `/admin/base-datos.php` | Volcado de solo lectura de las tablas |
 
 Productos y categorías se guardan con **formularios PHP clásicos** (POST a la misma página,
 validación en servidor, PRG con mensaje flash). Reservas, estados, stock y login usan la API JSON.
@@ -55,11 +57,15 @@ Despensa & Abarrotes, Lácteos, Café/Té/Mate, Limpieza del Hogar, Congelados, 
 y **60 productos** con nombre, categoría y **precio en bolivianos** (referencia: Fidalga,
 Santa Cruz de la Sierra, noviembre de 2026).
 
-Todavía no hay fotos: las tarjetas muestran un contenedor placeholder con el icono de la
-categoría. El texto «A consultar» aparece solo si un producto queda sin precio (`price = 0`).
+El texto «A consultar» aparece solo si un producto queda sin precio (`price = 0`).
 `stock = 20` es un valor provisional para que el flujo de reservas siga funcionando; puedes
-ajustarlo desde `/admin/productos.php`. Las imágenes se pueden subir después desde
-`/admin/producto-form.php` (Cloudinary).
+ajustarlo desde `/admin/productos.php`. Las fotos se suben desde `/admin/producto-form.php`
+a Cloudinary (carpeta `productos/`); si no hay foto se muestra el placeholder.
+
+El QR de pago se gestiona en `/admin/qr-pago.php` y se sube a la carpeta `qr/` de Cloudinary.
+Cuando hay una imagen cargada, el carrito muestra el bloque «Pago rápido con QR» con opciones
+de descargar y compartir; es solo una referencia visual, no se cobra online. La URL y el
+`public_id` se guardan en la tabla `settings` (`qr_pago_url`, `qr_pago_public_id`).
 
 ### Pruebas smoke
 
@@ -107,8 +113,10 @@ producto (en edición se muestra de solo lectura).
    imágenes antiguos, y vuelve a cargar las 8 categorías y los 60 productos. Haz antes una copia de seguridad:
    esa migración es destructiva (también elimina las reservas antiguas).
    Para dejar de pedir el email en las reservas, ejecuta también `database/migrate-reservas.sql`.
-   Si el catálogo ya estaba cargado, ejecuta `database/migrate-precios.sql` para actualizar
-   únicamente los precios de los 60 productos (no modifica stock, reservas ni imágenes).
+    Si el catálogo ya estaba cargado, ejecuta `database/migrate-precios.sql` para actualizar
+    únicamente los precios de los 60 productos (no modifica stock, reservas ni imágenes).
+    Si la BD es anterior al QR de pago, ejecuta `database/migrate-qr-pago.sql` (crea la tabla
+    `settings` y es segura si ya existe).
 2. Crea el servicio en **Render** desde este repo con el Blueprint `render.yaml`. Render no tiene
    runtime PHP nativo, por eso se usa el `Dockerfile` incluido.
 3. En el dashboard de Render rellena **una sola variable**:
@@ -116,9 +124,11 @@ producto (en edición se muestra de solo lectura).
    (usa la cadena que te da TiDB Cloud; el CA del sistema ya está en la imagen).
 4. Cloudinary es opcional y usa **una sola variable**:
    `CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME`.
-   En total, Render necesita solo dos variables manuales: `DB_URL` y `CLOUDINARY_URL`.
-   Si no tienes credenciales, no añadas nada: los productos se guardan sin imagen y se muestra un placeholder.
+    En total, Render necesita solo dos variables manuales: `DB_URL` y `CLOUDINARY_URL`.
+    Si la variable no llega a PHP, la misma cadena se puede guardar en la tabla `settings`
+    con la clave `cloudinary_url`; `/admin/qr-pago.php` muestra solo el estado enmascarado.
+    Si no tienes credenciales, no añadas nada: los productos se guardan sin imagen y se muestra un placeholder.
 5. No hace falta `APP_URL`, `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` ni `DB_PASS` en producción:
    `includes/db.php` obtiene todo de `DB_URL`.
 
-> Nota: `AGENTS.md` es la especificación completa del proyecto.
+> Nota: los secretos y la especificación interna no se versionan (`.env`, `AGENTS.md`).

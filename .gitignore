@@ -18,6 +18,9 @@
 *.pem
 *.key
 
+# Documentación interna de especificación (no se versiona)
+/AGENTS.md
+
 # Sistema y editores
 .DS_Store
 Thumbs.db
